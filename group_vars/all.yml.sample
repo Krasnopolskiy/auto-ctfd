@@ -1,0 +1,31 @@
+---
+ctfd:
+  hostname: "localhost.ctf"
+  workers: 2
+  secret: "very-secret-value"
+
+database:
+  host: "{{ hostvars['mysql']['ansible_host'] }}"
+  port: 3306
+  name: ctfd
+  user: ctfd
+  password: "very-secret-password"
+
+cache:
+  host: "{{ hostvars['mysql']['ansible_host'] }}"
+  port: 6379
+  password: "very-secret-password"
+
+storage:
+  bucket: ctfd
+  region: "eu-central-1"
+  access-key: ctfd
+  secret-key: "very-secret-password"
+  hostname: "s3.localhost.ctf"
+
+monitoring:
+  host: "{{ hostvars['monitor']['ansible_host'] }}"
+  name: admin
+  password: "very-secret-password"
+  hostname: "monitoring.localhost.ctf"
+  loki-url: "http://{{ hostvars['monitor']['ansible_host'] }}:3100/loki/api/v1/push"

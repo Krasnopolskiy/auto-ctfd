@@ -1,0 +1,4 @@
+---
+- name: Run Grafana
+  hosts: [ monitoring ]
+  roles: [ monitoring ]

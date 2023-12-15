@@ -1,0 +1,4 @@
+---
+- name: MinIO
+  hosts: [ storages ]
+  roles: [ minio ]

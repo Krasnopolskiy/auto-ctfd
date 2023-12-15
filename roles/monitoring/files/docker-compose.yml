@@ -1,0 +1,31 @@
+name: "ctfd-monitoring"
+
+services:
+  grafana:
+    image: grafana/grafana
+    user: "0:0"
+    env_file:
+      - .env
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./certs:/etc/grafana/certs
+    ports:
+      - "443:443"
+
+  loki:
+    image: grafana/loki
+    user: "0:0"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./loki/loki.yml:/etc/loki/loki.yml
+      - ./data/loki:/loki/
+    ports:
+      - "3100:3100"
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"

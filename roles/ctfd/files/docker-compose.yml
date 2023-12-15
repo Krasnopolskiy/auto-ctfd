@@ -1,0 +1,43 @@
+name: "ctfd-backend"
+
+services:
+  nginx:
+    image: nginx:stable
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    volumes:
+      - ./conf/nginx/http.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - ctfd
+    restart: unless-stopped
+    logging:
+      driver: loki
+      options:
+        loki-url: $LOKI_URL
+
+  ctfd:
+    build: .
+    user: root
+    env_file:
+      - .env
+    volumes:
+      - .data/CTFd/logs:/var/log/CTFd
+      - .data/CTFd/uploads:/var/uploads
+      - .:/opt/CTFd:ro
+    restart: unless-stopped
+    logging:
+      driver: loki
+      options:
+        loki-url: $LOKI_URL
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter
+    command: [ --path.rootfs=/host ]
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - /:/host:ro,rslave
+    ports:
+      - "9100:9100"

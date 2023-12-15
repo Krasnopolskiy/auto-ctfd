@@ -1,0 +1,39 @@
+upstream backend {
+{% for host in groups['backends'] %}
+    server {{ hostvars[host]['ansible_host'] }};
+{% endfor %}
+}
+
+server {
+    client_max_body_size 100M;
+
+    listen [::]:443 ssl ipv6only=on;
+    listen 443 ssl;
+
+    ssl_certificate /etc/letsencrypt/live/{{ ctfd['hostname'] }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ ctfd['hostname'] }}/privkey.pem;
+
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    server_name _;
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_pass http://backend;
+    }
+}
+
+server {
+    listen [::]:80;
+    listen 80;
+
+    server_name _;
+
+    if ($host = {{ ctfd['hostname'] }}) {
+        return 301 https://$host$request_uri;
+    }
+
+    return 404;
+}
