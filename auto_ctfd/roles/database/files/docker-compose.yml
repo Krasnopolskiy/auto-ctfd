@@ -1,0 +1,21 @@
+name: "ctfd-database"
+
+services:
+  mysql:
+    image: mysql
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+
+  redis:
+    image: redis
+    command: [ redis-server, --requirepass, "${REDIS_PASSWORD}"]
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data

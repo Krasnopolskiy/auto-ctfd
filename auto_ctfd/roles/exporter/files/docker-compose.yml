@@ -1,0 +1,22 @@
+name: "ctfd-exporter"
+
+services:
+  node_exporter:
+    image: quay.io/prometheus/node-exporter
+    command: [ --path.rootfs=/host ]
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - /:/host:ro,rslave
+    ports:
+      - "9100:9100"
+
+  promtail:
+    image: grafana/promtail:2.9.3
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/lib/promtail:/var/lib/promtail
+      - /run/log/journal:/run/log/journal
+      - ./config.yml:/etc/promtail/config.yml

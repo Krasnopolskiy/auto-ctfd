@@ -1,0 +1,31 @@
+---
+ctfd:
+  hostname: "xn--b1akcg.xn--h1aafgnfebu.xn--p1ai"
+  workers: 2
+  secret: "8e355f0a862dc7cff62093b02c793215"
+
+database:
+  host: "{{ hostvars['mysql']['ansible_host'] }}"
+  port: 3306
+  name: ctfd
+  user: ctfd
+  password: "77486ad0f7f0f16312709be38ba89ce2"
+
+cache:
+  host: "{{ hostvars['mysql']['ansible_host'] }}"
+  port: 6379
+  password: "f04721fd4501e1a90659b06114c356d1"
+
+storage:
+  bucket: ctfd
+  region: "eu-central-1"
+  access-key: ctfd
+  secret-key: "ab50ee99763fc9c12a95493c38f2b983"
+  hostname: "s3.xn--h1aafgnfebu.xn--p1ai"
+
+monitoring:
+  host: "{{ hostvars['monitor']['ansible_host'] }}"
+  name: admin
+  password: "3a4733a3ed6b7f0b95d42da491364590"
+  hostname: "dev.xn--h1aafgnfebu.xn--p1ai"
+  loki-url: "http://{{ hostvars['monitor']['ansible_host'] }}:3100/loki/api/v1/push"

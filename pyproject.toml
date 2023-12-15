@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "auto_ctfd"
+version = "0.1.0"
+package-mode = false
+description = "Ansible playbook to deploy CTFd"
+authors = ["Ivan Krasnopolsky <i1.krasnopolskiy@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ansible = "^9.4.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

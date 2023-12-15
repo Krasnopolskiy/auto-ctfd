@@ -1,0 +1,4 @@
+---
+- name: Run Exporter
+  hosts: [ backends, databases, storages, balancers ]
+  roles: [ exporter ]

@@ -1,0 +1,25 @@
+---
+- name: Install snapd & nginx
+  apt:
+    name:
+      - snapd
+      - nginx
+    state: present
+  become: yes
+
+- name: Install Certbot
+  community.general.snap:
+    name: certbot
+    classic: yes
+  become: yes
+
+- name: Create symbolic link for Certbot
+  file:
+    src: /snap/bin/certbot
+    dest: /usr/bin/certbot
+    state: link
+  become: yes
+
+- name: Obtain and install SSL certificate with Certbot for nginx
+  command: "certbot certonly --nginx --non-interactive --agree-tos -m {{ admin_email }} --domains {{ hostname }}"
+  become: yes

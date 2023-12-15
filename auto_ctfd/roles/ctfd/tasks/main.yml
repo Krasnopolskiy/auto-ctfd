@@ -1,0 +1,42 @@
+---
+- name: Install git
+  apt:
+    name: git
+    state: present
+  become: yes
+
+- name: Clone git repository
+  git:
+    repo: "{{ git_repo_url }}"
+    dest: "{{ ctfd_path }}"
+    clone: yes
+    update: yes
+    force: yes
+
+- name: Synchronize files
+  synchronize:
+    src: .
+    dest: "{{ ctfd_path }}"
+    dirs: yes
+    owner: no
+    group: no
+
+- name: Copy docker-compose.yml file
+  copy:
+    src: docker-compose.yml
+    dest: "{{ ctfd_path }}/docker-compose.yml"
+
+- name: Copy .env file from template
+  template:
+    src: .env.j2
+    dest: "{{ ctfd_path }}/.env"
+
+- name: Copy http.conf file from template
+  template:
+    src: ./conf/nginx/http.conf.j2
+    dest: "{{ ctfd_path }}/conf/nginx/http.conf"
+
+- name: Run Docker Compose
+  command: docker compose up -d --force-recreate
+  args:
+    chdir: "{{ ctfd_path }}"
