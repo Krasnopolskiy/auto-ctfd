@@ -1,0 +1,28 @@
+---
+- name: Install MySQL client & cron
+  apt:
+    name:
+      - mysql-client
+      - cron
+    state: present
+  become: yes
+
+- name: Create backup directory
+  file:
+    path: "{{ backup_path }}"
+    state: directory
+    mode: "0755"
+
+- name: Set up mysqldump cron job
+  cron:
+    name: "mysqldump backup"
+    minute: "*/30"
+    job: "mysqldump -h {{ database['host'] }} -u root -p{{ database['password'] }} {{ database['name'] }} > {{ backup_path }}/backup_$(date +\\%F-\\%T).sql"
+  become: yes
+
+- name: Set up clean cron job
+  cron:
+    name: "delete old backups"
+    hour: "*/1"
+    job: "find {{ backup_path }} -type f -name '*.sql' -mmin +480 -delete"
+  become: yes

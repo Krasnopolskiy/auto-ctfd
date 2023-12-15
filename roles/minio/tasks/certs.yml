@@ -1,0 +1,13 @@
+---
+- name: Create certs directory
+  file:
+    path: "{{ minio_path }}/certs"
+    state: directory
+
+- name: Copy fullchain.pem as public.crt
+  command: "cp -Lr /etc/letsencrypt/live/{{ storage['hostname'] }}/fullchain.pem {{ minio_path }}/certs/public.crt"
+  become: yes
+
+- name: Copy privkey.pem as private.key
+  command: "cp -Lr /etc/letsencrypt/live/{{ storage['hostname'] }}/privkey.pem {{ minio_path }}/certs/private.key"
+  become: yes

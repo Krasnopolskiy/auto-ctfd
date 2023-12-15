@@ -1,0 +1,41 @@
+---
+- name: Create configuration directory
+  file:
+    path: "{{ monitoring_path }}"
+    state: directory
+
+- name: Copy config files
+  copy:
+    src: .
+    dest: "{{ monitoring_path }}"
+
+- name: Copy .env file from template
+  template:
+    src: .env.j2
+    dest: "{{ monitoring_path }}/.env"
+
+- name: Create Prometheus configuration directory
+  file:
+    path: "{{ monitoring_path }}/prometheus/"
+    state: directory
+
+- name: Copy prometheus.yml file from template
+  template:
+    src: ./prometheus/prometheus.yml.j2
+    dest: "{{ monitoring_path }}/prometheus/prometheus.yml"
+
+- name: Install certificates
+  include_role:
+    name: certbot
+  vars:
+    hostname: "{{ monitoring['hostname'] }}"
+    homedir: "{{ monitoring_path }}"
+
+- name: Copy certificates
+  command: "cp -Lr /etc/letsencrypt/live/{{ monitoring['hostname'] }} {{ monitoring_path }}/certs"
+  become: yes
+
+- name: Run Docker Compose
+  command: docker compose up -d --force-recreate
+  args:
+    chdir: "{{ monitoring_path }}"
