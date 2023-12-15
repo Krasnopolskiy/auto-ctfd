@@ -1,0 +1,27 @@
+---
+- name: Install snapd & nginx
+  apt:
+    name:
+      - snapd
+      - nginx
+    state: present
+  become: yes
+
+- name: Install certificates
+  include_role:
+    name: certbot
+  vars:
+    hostname: "{{ ctfd['hostname'] }}"
+
+- name: Copy default file from template
+  template:
+    src: default.j2
+    dest: "/etc/nginx/sites-enabled/default"
+  become: yes
+
+- name: Restart Nginx service
+  systemd_service:
+    state: restarted
+    daemon_reload: true
+    name: nginx
+  become: yes

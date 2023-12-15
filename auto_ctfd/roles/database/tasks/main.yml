@@ -1,0 +1,20 @@
+---
+- name: Create configuration directory
+  file:
+    path: "{{ database_path }}"
+    state: directory
+
+- name: Copy docker-compose.yml file
+  copy:
+    src: docker-compose.yml
+    dest: "{{ database_path }}/docker-compose.yml"
+
+- name: Copy .env file from template
+  template:
+    src: .env.j2
+    dest: "{{ database_path }}/.env"
+
+- name: Run Docker Compose
+  command: docker compose up -d --force-recreate
+  args:
+    chdir: "{{ database_path }}"

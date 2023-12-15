@@ -1,0 +1,10 @@
+---
+- name: Check certificates already exists
+  stat:
+    path: "/etc/letsencrypt/live/{{ hostname }}"
+  become: yes
+  register: cert_exists
+
+- name: Install certificates
+  include_tasks: install.yml
+  when: not cert_exists.stat.exists

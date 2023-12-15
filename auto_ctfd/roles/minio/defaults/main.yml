@@ -1,0 +1,2 @@
+---
+minio_path: "/home/{{ ansible_user_id }}/minio"

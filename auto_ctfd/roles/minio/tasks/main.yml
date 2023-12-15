@@ -1,0 +1,36 @@
+---
+- name: Create configuration directory
+  file:
+    path: "{{ minio_path }}"
+    state: directory
+
+- name: Copy docker-compose.yml file
+  copy:
+    src: docker-compose.yml
+    dest: "{{ minio_path }}/docker-compose.yml"
+
+- name: Copy createbucket.sh file
+  copy:
+    src: createbucket.sh
+    dest: "{{ minio_path }}/createbucket.sh"
+    mode: "0777"
+
+- name: Copy .env file from template
+  template:
+    src: .env.j2
+    dest: "{{ minio_path }}/.env"
+
+- name: Install certificates
+  include_role:
+    name: certbot
+  vars:
+    hostname: "{{ storage['hostname'] }}"
+  register: cert_installed
+
+- name: Copy certificates
+  include_tasks: certs.yml
+
+- name: Run Docker Compose
+  command: docker compose up -d --force-recreate
+  args:
+    chdir: "{{ minio_path }}"

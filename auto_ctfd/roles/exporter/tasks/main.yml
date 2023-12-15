@@ -1,0 +1,20 @@
+---
+- name: Create configuration directory
+  file:
+    path: "{{ exporter_path }}"
+    state: directory
+
+- name: Copy docker-compose.yml file
+  copy:
+    src: docker-compose.yml
+    dest: "{{ exporter_path }}/docker-compose.yml"
+
+- name: Copy config.yml file from template
+  template:
+    src: config.yml.j2
+    dest: "{{ exporter_path }}/config.yml"
+
+- name: Run Docker Compose
+  command: docker compose up -d --force-recreate
+  args:
+    chdir: "{{ exporter_path }}"

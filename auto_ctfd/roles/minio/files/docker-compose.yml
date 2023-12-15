@@ -1,0 +1,31 @@
+name: "ctfd-minio"
+
+services:
+  minio:
+    image: minio/minio
+    hostname: ctfd.minio
+    command: server /data --console-address ":443"
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"
+      - "443:443"
+    healthcheck:
+      test: [ "CMD", "curl", "https://$MINIO_HOSTNAME:9000/minio/health/live" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./certs:/root/.minio/certs
+
+  createbuckets:
+    image: minio/mc
+    env_file:
+      - .env
+    entrypoint: /etc/createbucket.sh
+    volumes:
+      - ./createbucket.sh:/etc/createbucket.sh
+      - ./data/sources:/data
+    depends_on:
+      minio:
+        condition: service_healthy

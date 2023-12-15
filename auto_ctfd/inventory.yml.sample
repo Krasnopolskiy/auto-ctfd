@@ -1,0 +1,33 @@
+backends:
+  hosts:
+    ctfd-1:
+      ansible_user: ubuntu
+      ansible_host: 0.0.0.0
+
+    ctfd-2:
+      ansible_user: ubuntu
+      ansible_host: 0.0.0.0
+
+databases:
+  hosts:
+    mysql:
+      ansible_user: ubuntu
+      ansible_host: 0.0.0.0
+
+storages:
+  hosts:
+    minio:
+      ansible_user: ubuntu
+      ansible_host: 0.0.0.0
+
+balancers:
+  hosts:
+    nginx:
+      ansible_user: ubuntu
+      ansible_host: 0.0.0.0
+
+monitoring:
+  hosts:
+    monitor:
+      ansible_user: ubuntu
+      ansible_host: 0.0.0.0

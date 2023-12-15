@@ -1,0 +1,25 @@
+name: "ctfd-backend"
+
+services:
+  nginx:
+    image: nginx:stable
+    ports:
+      - "80:80"
+    env_file:
+      - .env
+    volumes:
+      - ./conf/nginx/http.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - ctfd
+    restart: unless-stopped
+
+  ctfd:
+    build: .
+    user: root
+    env_file:
+      - .env
+    volumes:
+      - .data/CTFd/logs:/var/log/CTFd
+      - .data/CTFd/uploads:/var/uploads
+      - .:/opt/CTFd:ro
+    restart: unless-stopped

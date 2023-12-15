@@ -1,0 +1,4 @@
+---
+- name: Run CTFd
+  hosts: [ backends ]
+  roles: [ ctfd ]
